@@ -9,7 +9,7 @@ RUN mkdir /app && apk add --update --no-cache git make
 COPY . /go/gotty
 WORKDIR /go/gotty
 
-RUN make && mv gotty /app/ && /app/gotty -v
+RUN rm -f gotty && make && mv gotty /app/ && /app/gotty -v
 
 WORKDIR /app
 RUN rm -r /go/gotty
