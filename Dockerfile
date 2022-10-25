@@ -14,7 +14,7 @@ RUN make && mv gotty /app/ && /app/gotty -v
 WORKDIR /app
 RUN rm -r /go/gotty
   
-ENTRYPOINT ["/usr/bin/gotty"]
+ENTRYPOINT ["/app/gotty"]
 CMD ["--permit-write" "--reconnect" "/bin/sh"]
   
   
