@@ -15,6 +15,6 @@ WORKDIR /app
 RUN rm -r /go/gotty
   
 ENTRYPOINT ["/app/gotty"]
-CMD ["--permit-write" "--reconnect" "/bin/sh"]
+CMD ["--permit-write" ,"--reconnect", "/bin/sh"]
   
   
