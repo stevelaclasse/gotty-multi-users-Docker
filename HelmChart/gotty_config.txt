@@ -1,0 +1,5 @@
+enable_basic_auth = true
+preferences {
+    font_size = 15
+    background_color = "rgb(16, 16, 32)"
+}

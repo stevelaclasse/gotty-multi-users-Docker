@@ -1,0 +1,22 @@
+#set the value of the GOTTY_CREDENTIAL  env variable
+#secret:
+#  value: "user01:password01"
+
+#set the value of the GOTTY_CREDENTIAL_FILE variable
+#Set the local path of the file where credentials are stored
+secretFile:
+  path: "gotty_credentials.txt"
+ 
+#set the value of the GOTTY_CONFIG variable
+#Set the local path of the config file
+configFile:
+  path: "gotty_config.txt"
+
+#Add other env variables in the extraEnv
+#Do not set the GOTTY_CREDENTIAL_FILE in the extraEnv  
+extraEnv:
+  GOTTY_RANDOM_URL: false
+  GOTTY_ADDRESS: "0.0.0.0"
+  
+#You can additionally add the GOTTY_OPTIONS env variable and set the others env variable as command line options
+#GOTTY_OPTIONS : "--port 8080 --permit-write --permit-arguments --credential user01:password01"

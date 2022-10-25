@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "webshell.fullname" . }}
+  labels:
+    {{- include "webshell.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "webshell.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "webshell.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "webshell.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.image.port }}
+              protocol: TCP
+          #livenessProbe:
+          #  httpGet:
+          #    path: /
+          #    port: http
+          #readinessProbe:
+          #  httpGet:
+          #    path: /
+          #    port: http         
+          env:
+          {{- if .Values.secretFile }}
+          - name: GOTTY_CREDENTIAL_FILE
+            value: "/opt/webshell.passwd"
+          {{- end }}
+          {{- if .Values.configFile }}
+          - name: GOTTY_CONFIG
+            value: "/opt/webshell.config"
+          {{- end }}
+          {{- if .Values.secret }}
+          - name: GOTTY_CREDENTIAL
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "webshell.fullname" . }}
+                key: "{{ .Values.secret.key }}"
+          {{- end}}
+          {{- range $key, $value := .Values.extraEnv }}
+          - name: {{ $key }}
+            value: "{{ $value }}"
+          {{- end }}
+          {{- if or (.Values.secretFile) (.Values.configFile) }}
+          volumeMounts:   
+          {{- if .Values.secretFile }}
+          - name: {{ include "webshell.fullname" . }}
+            mountPath: "/opt/webshell.passwd"
+            subPath: credentials.conf
+          {{- end }}
+          {{- if .Values.configFile }}
+          - name: {{ include "webshell.fullname" . }}
+            mountPath: "/opt/webshell.config"
+            subPath: config.conf
+          {{- end }}
+          {{- end}}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- if or (.Values.secretFile) (.Values.configFile) }}
+      volumes:
+      - name: {{ include "webshell.fullname" . }}
+        configMap:
+          name: {{ include "webshell.fullname" . }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

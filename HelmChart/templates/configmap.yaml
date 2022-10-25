@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "webshell.fullname" . }}
+data:
+  credentials.conf: |-
+  {{- if .Values.secretFile }}
+  {{ .Files.Get .Values.secretFile.path | nindent 4}}
+  {{- end }}
+  config.conf: |-
+  {{- if .Values.configFile }}
+  {{ .Files.Get .Values.configFile.path | nindent 4}}
+  {{- end }}
