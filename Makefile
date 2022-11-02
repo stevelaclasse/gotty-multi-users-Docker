@@ -4,9 +4,7 @@ VERSION = 2.0.0-alpha.3
 BUILD_OPTIONS = -ldflags "-X main.Version=$(VERSION) -X main.CommitID=$(GIT_COMMIT)"
 
 gotty: main.go server/*.go webtty/*.go backend/*.go Makefile
-	go mod download
-	go mod vendor
-	go build ${BUILD_OPTIONS}
+	godep go build ${BUILD_OPTIONS} ${BUILD_OPTIONS}
 
 .PHONY: asset
 asset: bindata/static/js/gotty-bundle.js bindata/static/index.html bindata/static/favicon.png bindata/static/css/index.css bindata/static/css/xterm.css bindata/static/css/xterm_customize.css
@@ -14,7 +12,7 @@ asset: bindata/static/js/gotty-bundle.js bindata/static/index.html bindata/stati
 	gofmt -w server/asset.go
 
 .PHONY: all
-all: asset gotty
+all: install_tools asset gotty
 
 bindata:
 	mkdir bindata
@@ -64,6 +62,12 @@ tools:
 	go get github.com/mitchellh/gox
 	go get github.com/tcnksm/ghr
 	go get github.com/jteeuwen/go-bindata/...
+	
+install_tools:
+	go install github.com/tools/godep
+	go install github.com/mitchellh/gox
+	go install github.com/tcnksm/ghr
+	go install github.com/jteeuwen/go-bindata/...
 
 test:
 	if [ `go fmt $(go list ./... | grep -v /vendor/) | wc -l` -gt 0 ]; then echo "go fmt error"; exit 1; fi
