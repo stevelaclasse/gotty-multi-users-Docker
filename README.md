@@ -6,3 +6,5 @@ This credential file support was already implemented in the webkubectl project (
 I just moved the changes that were applied in the Webkubectl project (Gotty folder) to the original gotty project and added a Docker file and a Helm Chart. 
 
 The docker image can be download here : `stevelaclasse/gotty-multi-users-docker:latest`
+
+The **SSH** conection to a host server with gotty was implemented in this repository: https://github.com/stevelaclasse/gotty-web-ssh/ .
