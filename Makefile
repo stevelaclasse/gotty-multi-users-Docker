@@ -4,7 +4,7 @@ VERSION = 2.0.0-alpha.3
 BUILD_OPTIONS = -ldflags "-X main.Version=$(VERSION) -X main.CommitID=$(GIT_COMMIT)"
 
 gotty: main.go server/*.go webtty/*.go backend/*.go Makefile
-	godep go build ${BUILD_OPTIONS} ${BUILD_OPTIONS}
+	godep go build ${BUILD_OPTIONS}
 
 .PHONY: asset
 asset: bindata/static/js/gotty-bundle.js bindata/static/index.html bindata/static/favicon.png bindata/static/css/index.css bindata/static/css/xterm.css bindata/static/css/xterm_customize.css
@@ -12,7 +12,7 @@ asset: bindata/static/js/gotty-bundle.js bindata/static/index.html bindata/stati
 	gofmt -w server/asset.go
 
 .PHONY: all
-all: install_tools asset gotty
+all: tools install_tools asset gotty
 
 bindata:
 	mkdir bindata
